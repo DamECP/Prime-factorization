@@ -3,33 +3,47 @@ import gmpy2
 
 def prime_factorization(user_input):
 
-    answer_list = []
+    def format_as_powers(factors: dict):
+        print(" x ".join(f"{key}^{value}" for key, value in factors.items()))
 
-    if gmpy2.is_prime(user_input):
-        return f"{user_input} is a prime number."
+    def format_as_multiplication(factors: dict):
+        print(
+            " x ".join(
+                f"{key}" if value == 1 else f"{key} x {value}"
+                for key, value in factors.items()
+            )
+        )
+
+    result = {}
 
     if user_input <= 1:
-        return "0 and 1 are too small."
+        print("0 and 1 are too small.")
 
-    # deal with 2 first
-    while user_input % 2 == 0:
-        answer_list.append("2")
-        user_input //= 2
+    elif gmpy2.is_prime(user_input):
+        print(f"{user_input} is a prime number.")
 
-    divisor = 3
-    while user_input != 1:
-        if user_input % divisor == 0:
-            answer_list.append(str(divisor))
-            user_input = user_input // divisor
-        else:
-            divisor = gmpy2.next_prime(divisor)
+    else:
+        divisor = 2
+        counter = 0
+        while user_input > 1:
+            if user_input % divisor == 0:
+                user_input = user_input // divisor
+                counter += 1
+            else:
+                if counter > 0:
+                    result[int(divisor)] = counter
+                    counter = 0
+                divisor = gmpy2.next_prime(divisor)
 
-    # print as a line of multiplications
-    return " x ".join(answer_list)
+        if counter > 0:
+            result[int(divisor)] = counter
+
+        format_as_multiplication(result)
+        format_as_powers(result)
 
 
 while True:
     user_input = input("Enter an integer value : ")
     if user_input.isdigit():
         user_input = int(user_input)
-        print(prime_factorization(user_input))
+        prime_factorization(user_input)
