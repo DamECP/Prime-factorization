@@ -7,12 +7,10 @@ def prime_factorization(user_input):
         print(" x ".join(f"{key}^{value}" for key, value in factors.items()))
 
     def format_as_multiplication(factors: dict):
-        print(
-            " x ".join(
-                f"{key}" if value == 1 else f"{key} x {value}"
-                for key, value in factors.items()
-            )
-        )
+        result = []
+        for key, value in factors.items():
+            result.extend([key] * value)
+        print(" x ".join(map(str, result)))
 
     result = {}
 
